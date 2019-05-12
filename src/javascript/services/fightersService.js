@@ -3,7 +3,7 @@ import { callApi } from '../helpers/apiHelper';
 class FighterService {
   async getFighters() {
     try {
-      const endpoint = 'repos/sahanr/street-fighter/contents/fighters.json';
+      const endpoint = 'fighters.json';
       const apiResult = await callApi(endpoint, 'GET');
 
       return JSON.parse(atob(apiResult.content));
@@ -14,7 +14,7 @@ class FighterService {
 
   async getFighterDetails(_id) {
     // implement this method
-    // endpoint - `repos/sahanr/street-fighter/contents/fighter-${_id}.json`;
+    // endpoint - `details/fighters/${_id}.json`;
   }
 }
 
