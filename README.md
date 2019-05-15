@@ -1,4 +1,5 @@
 # stage-2-es6-for-everyone
+📚 Homework task accomplishment for BSA2019, stage 2.
 
 ## Instalation
 
