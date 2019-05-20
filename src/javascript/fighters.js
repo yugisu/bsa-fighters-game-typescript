@@ -12,9 +12,21 @@ class FightersController {
   }
 
   fightersDetailsMap = new Map();
+  selectedFighters = new Set();
 
   handleFighterClick = async (event, fighter) => {
     const { _id: id } = fighter;
+
+    if (this.selectedFighters.has(id)) {
+      this.selectedFighters.delete(id);
+      event.currentTarget.classList.remove('fighter--selected');
+    } else {
+      if (this.selectedFighters.size < 2) {
+        this.selectedFighters.add(id);
+        event.currentTarget.classList.add('fighter--selected');
+      }
+    }
+
     let fighterDetails;
 
     if (this.fightersDetailsMap.has(id)) {
@@ -24,8 +36,9 @@ class FightersController {
       this.fightersDetailsMap.set(id, fighterDetails);
     }
 
-    // show modal with fighter info
-    // allow to edit health and power in this modal
+    if (event.target.classList.contains('fighter-edit')) {
+      console.log('MODAL WINDOW');
+    }
   };
 }
 

@@ -11,7 +11,6 @@ html {
   box-sizing: inherit;
 }
 
-html,
 body {
   height: 100%;
   width: 100%;
@@ -20,46 +19,130 @@ body {
   padding: 0;
 }
 
+button,
+input,
+textarea {
+  outline: none;
+}
+
+button {
+  padding: .5rem;
+
+  font-weight: bold;
+
+  color: #fff;
+  border: none;
+  background: rgba(255, 99, 71, 0.6);
+  box-shadow: 0 0 5px rgba(255, 99, 71, 0.6);
+  cursor: pointer;
+  transition: all .16s;
+}
+
+button:hover {
+  background: rgba(255, 99, 71, 0.7);
+}
+
 #root {
-  height: 100%;
-  width: 100%;
+  min-height: 100vh;
+  width: 100vw;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
 }
 
 .fighters {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  flex-wrap: wrap;
-  padding: 0 15px;
+  width: 100vw;
+
+  padding: 2rem;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fit, 180px);
+  gap: 1.5rem;
+
+  background: linear-gradient(to right bottom, rgb(255, 152, 133), rgb(253, 130, 108));
 }
 
 .fighter {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
+  position: relative;
+  z-index: 50;
+
+  display: grid;
+  grid-auto-flow: row;
+  row-gap: 2rem;
+  padding: 2rem 1.2rem 1.8rem;
+  overflow: hidden;
+
+  box-shadow: 0 5px 30px 5px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.95);
+  transition: box-shadow .16s, background-color .16s;
 }
 
 .fighter:hover {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 20px 2px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
 
-.fighter-name {
-  margin-top: 20px;
-  align-self: center;
+.fighter::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 5px;
 
-  font-size: 1.5rem;
-  text-shadow: 1px 1px tomato;
+  box-shadow: unset;
+  transition: all .16s;
+}
+
+.fighter--selected::before {
+  background: indigo;
+  box-shadow: 0 -1px 15px indigo;
 }
 
 .fighter-image {
-  height: 260px;
+  justify-self: center;
+  align-self: end;
+  max-height: 180px;
+  max-width: 100%;
+}
+
+.fighter-name {
+  position: relative;
+  align-self: center;
+
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgb(201, 154, 146);
+}
+
+.fighter-name::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -5px;
+  width: 25%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.fighter-edit {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+
+  padding: .25rem;
+
+  opacity: 0;
+  transition: opacity .16s;
+}
+
+.fighter:hover .fighter-edit {
+  opacity: 1;
+
+  transition: opacity .16s .66s;
 }
 
 #loading-overlay {
