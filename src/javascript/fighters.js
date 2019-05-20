@@ -1,10 +1,21 @@
 import View from './view';
-import FighterView from './fighterView';
+import FighterView from './fighter';
 import { fighterService } from './services/fightersService';
 
 class FightersController {
-  constructor(fighters) {
-    this._view = new FightersView(fighters, this.handleFighterClick);
+  constructor(fighters, handleFightStart) {
+    const onFightStart = () => {
+      if (this.selectedFighters.size == 2) {
+        const selectedFighters = [];
+        this.selectedFighters.forEach(val =>
+          selectedFighters.push(this.fightersDetailsMap.get(val))
+        );
+        handleFightStart(selectedFighters);
+      } else {
+        alert('Choose 2 fighters!');
+      }
+    };
+    this._view = new FightersView(fighters, this.handleFighterClick, onFightStart);
   }
 
   get element() {
@@ -15,25 +26,28 @@ class FightersController {
   selectedFighters = new Set();
 
   handleFighterClick = async (event, fighter) => {
+    const currentTarget = event.currentTarget;
     const { _id: id } = fighter;
-
-    if (this.selectedFighters.has(id)) {
-      this.selectedFighters.delete(id);
-      event.currentTarget.classList.remove('fighter--selected');
-    } else {
-      if (this.selectedFighters.size < 2) {
-        this.selectedFighters.add(id);
-        event.currentTarget.classList.add('fighter--selected');
-      }
-    }
 
     let fighterDetails;
 
+    // Get fighter details and fetch them if needed
     if (this.fightersDetailsMap.has(id)) {
       fighterDetails = this.fightersDetailsMap.get(id);
     } else {
       fighterDetails = await fighterService.getFighterDetails(id);
       this.fightersDetailsMap.set(id, fighterDetails);
+    }
+
+    // Select fighter
+    if (this.selectedFighters.has(id)) {
+      this.selectedFighters.delete(id);
+      currentTarget.classList.remove('fighter--selected');
+    } else {
+      if (this.selectedFighters.size < 2) {
+        this.selectedFighters.add(id);
+        currentTarget.classList.add('fighter--selected');
+      }
     }
 
     if (event.target.classList.contains('fighter-edit')) {
@@ -43,9 +57,10 @@ class FightersController {
 }
 
 class FightersView extends View {
-  constructor(fighters, handleFighterClick) {
+  constructor(fighters, handleFighterClick, onFightStart) {
     super();
 
+    this.onFightStart = onFightStart;
     this.createFighters(fighters, handleFighterClick);
   }
 
@@ -55,8 +70,21 @@ class FightersView extends View {
       return fighterView.element;
     });
 
+    const startButton = this.createStartButton();
+
     this.element = this.createElement({ tagName: 'div', className: 'fighters' });
-    this.element.append(...fighterElements);
+    this.element.append(...fighterElements, startButton);
+  }
+
+  createStartButton() {
+    const startButton = this.createElement({
+      tagName: 'button',
+      className: 'fighters-startFight',
+    });
+    startButton.innerText = 'Fight!';
+    startButton.addEventListener('click', this.onFightStart);
+
+    return startButton;
   }
 }
 

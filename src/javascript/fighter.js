@@ -1,20 +1,50 @@
 import View from './view';
 
-class FighterView extends View {
-  constructor(fighter, handleClick, handleEditClick) {
-    super();
-
-    this.createFighter(fighter, handleClick, handleEditClick);
+export class Fighter {
+  constructor({ name, health, attack, defense, source }) {
+    this.name = name;
+    this.health = health;
+    this.attack = attack;
+    this.defense = defense;
+    this.image = source;
   }
 
-  createFighter(fighter, handleClick, handleEditClick) {
+  getHitPower() {
+    const criticalHitChance = Math.random() + 1;
+    const power = this.attack * criticalHitChance;
+
+    return power;
+  }
+
+  getBlockPower() {
+    const dodgeChance = Math.random() + 1;
+    const power = this.defense * dodgeChance;
+
+    return power;
+  }
+}
+
+export default class FighterView extends View {
+  constructor(fighter, handleClick, inArena = false) {
+    super();
+
+    this.inArena = inArena;
+    this.createFighter(fighter, handleClick);
+  }
+
+  createFighter(fighter, handleClick) {
     const { name, source } = fighter;
     const nameElement = this.createName(name);
     const imageElement = this.createImage(source);
-    const editButtonElement = this.createEditButton();
 
     this.element = this.createElement({ tagName: 'div', className: 'fighter' });
-    this.element.append(imageElement, nameElement, editButtonElement);
+    this.element.append(imageElement, nameElement);
+
+    if (!this.inArena) {
+      const editButtonElement = this.createEditButton();
+      this.element.append(editButtonElement);
+    }
+
     this.element.addEventListener('click', event => handleClick(event, fighter), false);
   }
 
@@ -49,5 +79,3 @@ class FighterView extends View {
     return editElement;
   }
 }
-
-export default FighterView;
