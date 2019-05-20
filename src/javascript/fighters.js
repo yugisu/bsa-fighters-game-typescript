@@ -14,9 +14,16 @@ class FightersController {
   fightersDetailsMap = new Map();
 
   handleFighterClick = async (event, fighter) => {
-    console.log('clicked');
+    const { _id: id } = fighter;
+    let fighterDetails;
 
-    // get from map or load info and add to fightersMap
+    if (this.fightersDetailsMap.has(id)) {
+      fighterDetails = this.fightersDetailsMap.get(id);
+    } else {
+      fighterDetails = await fighterService.getFighterDetails(id);
+      this.fightersDetailsMap.set(id, fighterDetails);
+    }
+
     // show modal with fighter info
     // allow to edit health and power in this modal
   };
