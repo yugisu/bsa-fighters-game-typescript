@@ -1,3 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic');
+
+html {
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 html,
 body {
   height: 100%;
@@ -33,7 +46,7 @@ body {
 }
 
 .fighter:hover {
-  box-shadow: 0 0 50px 10px rgba(0,0,0,0.06);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
   cursor: pointer;
 }
 
@@ -41,7 +54,8 @@ body {
   margin-top: 20px;
   align-self: center;
 
-  font-size: 21px;
+  font-size: 1.5rem;
+  text-shadow: 1px 1px tomato;
 }
 
 .fighter-image {
