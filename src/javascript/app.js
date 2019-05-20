@@ -1,4 +1,4 @@
-import FightersView from './fightersView';
+import FightersComponent from './fighters';
 import { fighterService } from './services/fightersService';
 
 class App {
@@ -14,7 +14,7 @@ class App {
       App.loadingElement.style.visibility = 'visible';
 
       const fighters = await fighterService.getFighters();
-      const fightersView = new FightersView(fighters);
+      const fightersView = new FightersComponent(fighters);
       const fightersElement = fightersView.element;
 
       App.rootElement.appendChild(fightersElement);
