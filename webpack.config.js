@@ -1,11 +1,11 @@
 const path = require('path');
 
 module.exports = {
-  entry: './index.js',
+  entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'dist'), 
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/dist/'
+    publicPath: '/dist/',
   },
   module: {
     rules: [
@@ -14,23 +14,23 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         use: [
           {
-            loader: "babel-loader",
+            loader: 'babel-loader',
             options: {
-              configFile: "./babel.config.js",
-              cacheDirectory: true
-            }
-          }
-        ]
+              configFile: './babel.config.js',
+              cacheDirectory: true,
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      }
-    ]
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
   },
   mode: 'development',
   devServer: {
-    inline: true
+    inline: true,
   },
-  devtool: "source-map"
-}
+  devtool: 'source-map',
+};
