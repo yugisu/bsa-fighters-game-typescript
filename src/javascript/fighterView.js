@@ -29,7 +29,7 @@ class FighterView extends View {
     const imgElement = this.createElement({
       tagName: 'img',
       className: 'fighter-image',
-      attributes
+      attributes,
     });
 
     return imgElement;
