@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es6",
+    "lib": ["esnext"],
+    "strict": true,
+    "allowJs": true,
+
+    "baseUrl": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["./src"]
+}
