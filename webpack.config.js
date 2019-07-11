@@ -23,7 +23,7 @@ module.exports = {
   devServer: {
     inline: true,
   },
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
