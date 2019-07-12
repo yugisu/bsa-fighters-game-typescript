@@ -11,7 +11,14 @@ class Arena extends View {
   constructor(selectedFighters: FighterDetails[]) {
     super();
 
-    this.createArena(selectedFighters);
+    this.element = this.createElement({
+      tagName: 'div',
+      className: 'arena',
+    });
+
+    this.createArena();
+
+    this.addFighters(selectedFighters);
 
     this.fighter1 = new Fighter(selectedFighters[0]);
     this.fighter2 = new Fighter(selectedFighters[1]);
@@ -19,75 +26,21 @@ class Arena extends View {
     this.fight();
   }
 
-  fight = () => {
-    let firstHit = true;
-
-    this.hitInterval = window.setInterval(() => {
-      if (firstHit) {
-        const fighter1health = document.getElementById('fighter1-health');
-
-        let hitPower = this.fighter2.getHitPower() - this.fighter1.getBlockPower();
-        hitPower = hitPower > 0 ? hitPower : 0;
-
-        this.fighter1.stats.health -= hitPower;
-
-        if (this.fighter1.stats.health <= 0) {
-          this.finishGame(this.fighter2);
-        }
-
-        if (fighter1health) {
-          fighter1health.innerText = fighter1health.innerText.replace(
-            /[0-9]+/,
-            this.fighter1.stats.health.toFixed(0)
-          );
-        }
-      } else {
-        const fighter2health = document.getElementById('fighter2-health');
-
-        let hitPower = this.fighter1.getHitPower() - this.fighter2.getBlockPower();
-        hitPower = hitPower > 0 ? hitPower : 0;
-
-        this.fighter2.stats.health -= hitPower;
-
-        if (this.fighter2.stats.health <= 0) {
-          this.finishGame(this.fighter1);
-        }
-
-        if (fighter2health) {
-          fighter2health.innerText = fighter2health.innerText.replace(
-            /[0-9]+/,
-            this.fighter2.stats.health.toFixed(0)
-          );
-        }
-      }
-      firstHit = !firstHit;
-    }, 200);
-  };
-
-  finishGame = (winner: Fighter) => {
-    clearInterval(this.hitInterval);
-
-    const splash = this.createElement({
-      tagName: 'div',
-      className: 'finishSplash',
+  createArena = () => {
+    const announcement = this.createElement({
+      tagName: 'h1',
+      className: 'arena__announcement',
+      attributes: {
+        id: 'arena__announcement',
+      },
     });
 
-    splash.innerText = `${winner.name} wins!`;
+    announcement.innerText = 'Fight!';
 
-    this.element.replaceWith(splash);
+    this.element.append(announcement);
   };
 
-  createArena = (selectedFighters: FighterDetails[]) => {
-    const fighterElements = this.createFighters(selectedFighters);
-
-    this.element = this.createElement({
-      tagName: 'div',
-      className: 'arena',
-    });
-    this.element.append(...fighterElements);
-  };
-
-  createFighters = (fighters: FighterDetails[]) => {
+  addFighters = (fighters: FighterDetails[]) => {
     const fighterElements = fighters.map((fighter, idx) => {
       const { health, attack, defense } = fighter;
 
@@ -124,10 +77,57 @@ class Arena extends View {
       return element;
     });
 
-    return fighterElements;
+    this.element.append(...fighterElements);
+  };
+
+  fight = () => {
+    const fighters = [this.fighter1, this.fighter2];
+    let healthElements: HTMLElement[] = [];
+    let arenaAnnounce: HTMLElement;
+
+    this.hitInterval = window.setInterval(() => {
+      if (!healthElements[0]) {
+        const fighter1health = document.getElementById('fighter1-health')!;
+        const fighter2health = document.getElementById('fighter2-health')!;
+
+        healthElements = [fighter1health, fighter2health];
+        arenaAnnounce = document.getElementById('arena__announcement')!;
+      }
+
+      const [attacker, defender] = fighters.reverse();
+      const [_, defenderHealth] = healthElements.reverse();
+
+      const hitPower = attacker.hit(defender);
+
+      if (defender.stats.health <= 0) {
+        this.finishGame(attacker);
+      }
+
+      arenaAnnounce.innerHTML = `${attacker.name} hit ${
+        defender.name
+      } for ${hitPower.toFixed(2)} hp`;
+
+      if (defenderHealth) {
+        defenderHealth.innerText = defenderHealth.innerText.replace(
+          /[0-9]+/,
+          defender.stats.health.toFixed(0)
+        );
+      }
+    }, 750);
+  };
+
+  finishGame = (winner: Fighter) => {
+    clearInterval(this.hitInterval);
+
+    const splash = this.createElement({
+      tagName: 'div',
+      className: 'finishSplash',
+    });
+
+    splash.innerText = `${winner.name} wins!`;
+
+    this.element.replaceWith(splash);
   };
 }
 
 export default Arena;
-
-type FighterHealthElements = 'fighter1health' | 'fighter2health';

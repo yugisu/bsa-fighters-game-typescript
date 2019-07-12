@@ -5,12 +5,19 @@ import { FighterClickHandler } from './fighters';
 export class Fighter {
   stats: { health: number; attack: number; defense: number };
   name: string;
-  image: string;
 
   constructor({ source, name, ...stats }: FighterDetails) {
     this.stats = stats;
     this.name = name;
-    this.image = source;
+  }
+
+  hit(opponent: Fighter) {
+    let hitPower = this.getHitPower() - opponent.getBlockPower();
+    hitPower = hitPower > 0 ? hitPower : 0;
+
+    opponent.stats.health -= hitPower;
+
+    return hitPower;
   }
 
   getHitPower() {

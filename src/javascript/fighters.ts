@@ -32,6 +32,7 @@ class FightersController {
       this.selectedFighters.forEach((val) =>
         selectedFighters.push(this.fightersDetailsMap.get(val))
       );
+
       handleFightStart(selectedFighters);
     } else {
       alert('Choose 2 fighters!');
@@ -45,13 +46,9 @@ class FightersController {
 
       const { _id: id } = fighter;
 
-      let fighterDetails;
-
       // Get fighter details and fetch them if needed
-      if (this.fightersDetailsMap.has(id)) {
-        fighterDetails = this.fightersDetailsMap.get(id);
-      } else {
-        fighterDetails = await fighterService.getFighterDetails(id);
+      if (!this.fightersDetailsMap.has(id)) {
+        const fighterDetails = await fighterService.getFighterDetails(id);
         this.fightersDetailsMap.set(id, fighterDetails);
       }
 
