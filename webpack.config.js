@@ -1,36 +1,32 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/dist/',
-  },
+  entry: './src/index.ts',
   module: {
     rules: [
       {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              configFile: './babel.config.js',
-              cacheDirectory: true,
-            },
-          },
-        ],
+        test: /\.(j|t)s$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+        exclude: /node_modules/,
       },
     ],
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.css'],
   },
   mode: 'development',
   devServer: {
     inline: true,
   },
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+    publicPath: '/dist/',
+  },
 };

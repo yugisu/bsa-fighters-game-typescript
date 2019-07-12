@@ -1,8 +1,8 @@
 const API_URL =
   'https://api.github.com/repos/binary-studio-academy/stage-2-es6-for-everyone/contents/resources/api/';
 
-function callApi(endpoind, method) {
-  const url = API_URL + endpoind;
+function callApi(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
+  const url = API_URL + endpoint;
   const options = {
     method,
   };
