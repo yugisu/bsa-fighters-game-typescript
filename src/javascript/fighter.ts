@@ -1,54 +1,73 @@
 import View from './view';
+import { FighterDetails, FighterType } from 'javascript/types/fighter.type';
+import { FighterClickHandler } from './fighters';
 
 export class Fighter {
-  constructor({ name, health, attack, defense, source }) {
+  stats: { health: number; attack: number; defense: number };
+  name: string;
+
+  constructor({ source, name, ...stats }: FighterDetails) {
+    this.stats = stats;
     this.name = name;
-    this.health = health;
-    this.attack = attack;
-    this.defense = defense;
-    this.image = source;
+  }
+
+  hit(opponent: Fighter) {
+    let hitPower = this.getHitPower() - opponent.getBlockPower();
+    hitPower = hitPower > 0 ? hitPower : 0;
+
+    opponent.stats.health -= hitPower;
+
+    return hitPower;
   }
 
   getHitPower() {
     const criticalHitChance = Math.random() + 1;
-    const power = this.attack * criticalHitChance;
+    const power = this.stats.attack * criticalHitChance;
 
     return power;
   }
 
   getBlockPower() {
     const dodgeChance = Math.random() + 1;
-    const power = this.defense * dodgeChance;
+    const power = this.stats.defense * dodgeChance;
 
     return power;
   }
 }
 
+type Props = {
+  fighter: FighterType;
+  inArena?: boolean;
+  handleClick?: FighterClickHandler;
+};
 export default class FighterView extends View {
-  constructor(fighter, handleClick, inArena = false) {
+  constructor({ fighter, inArena = false, handleClick = () => () => {} }: Props) {
     super();
 
-    this.inArena = inArena;
-    this.createFighter(fighter, handleClick);
+    this.element = this.createElement({ tagName: 'div', className: 'fighter' });
+    this.createFighter(fighter, handleClick, inArena);
   }
 
-  createFighter(fighter, handleClick) {
+  createFighter(
+    fighter: FighterType,
+    handleClick: FighterClickHandler,
+    inArena: boolean
+  ) {
     const { name, source } = fighter;
     const nameElement = this.createName(name);
     const imageElement = this.createImage(source);
 
-    this.element = this.createElement({ tagName: 'div', className: 'fighter' });
     this.element.append(imageElement, nameElement);
 
-    if (!this.inArena) {
+    if (!inArena) {
       const editButtonElement = this.createEditButton();
       this.element.append(editButtonElement);
     }
 
-    this.element.addEventListener('click', event => handleClick(event, fighter), false);
+    this.element.addEventListener('click', handleClick(fighter), false);
   }
 
-  createName(name) {
+  createName(name: string) {
     const nameElement = this.createElement({
       tagName: 'span',
       className: 'fighter-name',
@@ -58,7 +77,7 @@ export default class FighterView extends View {
     return nameElement;
   }
 
-  createImage(source) {
+  createImage(source: string) {
     const attributes = { src: source };
     const imgElement = this.createElement({
       tagName: 'img',
