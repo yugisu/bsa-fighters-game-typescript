@@ -2,14 +2,17 @@ import ArenaComponent from './arena';
 import FightersComponent from './fighters';
 
 import { fighterService } from './services/fightersService';
+import { FighterDetails } from './types/fighter.type';
 
 class App {
+  static rootElement = document.getElementById('root')!;
+  static loadingElement = document.getElementById('loading-overlay')!;
+
+  fightersElement: HTMLElement | undefined;
+
   constructor() {
     this.startApp();
   }
-
-  static rootElement = document.getElementById('root');
-  static loadingElement = document.getElementById('loading-overlay');
 
   async startApp() {
     try {
@@ -19,7 +22,7 @@ class App {
       const fightersView = new FightersComponent(fighters, this.handleFightStart);
       this.fightersElement = fightersView.element;
 
-      App.rootElement.appendChild(this.fightersElement);
+      App.rootElement.appendChild(this.fightersElement!);
     } catch (error) {
       console.warn(error);
       App.rootElement.innerText = 'Failed to load data';
@@ -28,11 +31,13 @@ class App {
     }
   }
 
-  handleFightStart = selectedFighters => {
+  handleFightStart = (selectedFighters: FighterDetails[]) => {
     const arenaView = new ArenaComponent(selectedFighters);
     const arenaElement = arenaView.element;
 
-    App.rootElement.replaceChild(arenaElement, this.fightersElement);
+    if (arenaElement && this.fightersElement) {
+      App.rootElement.replaceChild(arenaElement, this.fightersElement);
+    }
   };
 }
 

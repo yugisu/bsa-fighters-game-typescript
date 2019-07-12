@@ -1,7 +1,8 @@
 import { callApi } from '../helpers/apiHelper';
+import { FighterType, FighterDetails } from 'javascript/types/fighter.type';
 
 class FighterService {
-  async getFighters() {
+  async getFighters(): Promise<FighterType[]> {
     try {
       const endpoint = 'fighters.json';
       const apiResult = await callApi(endpoint, 'GET');
@@ -12,9 +13,9 @@ class FighterService {
     }
   }
 
-  async getFighterDetails(_id) {
+  async getFighterDetails(id: string): Promise<FighterDetails> {
     try {
-      const endpoint = `details/fighter/${_id}.json`;
+      const endpoint = `details/fighter/${id}.json`;
       const apiResult = await callApi(endpoint, 'GET');
 
       return JSON.parse(atob(apiResult.content));
